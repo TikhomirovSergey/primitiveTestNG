@@ -1,7 +1,9 @@
 package org.primitive.poweredbytestng;
 
+import java.util.Calendar;
 import java.util.logging.Level;
 import org.primitive.logging.Log;
+import org.primitive.logging.Photographer;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -43,6 +45,10 @@ public class ReportBuildingTestListener implements ITestListener {
 		//it initiates the new result container
 		ResultStore.get(arg0);
 		TestResultThreadLocal.set(arg0);
+		//screnshots for each test will be saved to specified directory
+		String picFolder = arg0.getTestContext().getOutputDirectory();
+		picFolder = picFolder + "/" + Calendar.getInstance().getTime().toString().replace(":", " ");
+		Photographer.setOutputFolder(picFolder + "/");
 	}
 
 	public void onTestSuccess(ITestResult arg0) 

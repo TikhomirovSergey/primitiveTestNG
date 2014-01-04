@@ -10,7 +10,7 @@ import org.primitive.logging.Log.LogRecWithAttach;
 import org.testng.ITestResult;
 
 
-public class ResultStore 
+class ResultStore 
 {
 	//this hashMap contains ITestResult as key and object of ResultStore  as value 
 	private static final HashMap<ITestResult, ResultStore> mappedResults = new HashMap<ITestResult, ResultStore>();

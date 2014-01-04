@@ -18,7 +18,7 @@ import org.testng.Reporter;
  * @author s.tihomirov
  *	It is the basic implementation of ISender for using by TESTNG framework. It posts log record in report
  */	
-public class ConverterToTestNGReport implements ILogConverter{
+class ConverterToTestNGReport implements ILogConverter{
 
 	private final String debugColor = eLogColors.DEBUGCOLOR.getHTMLColorDescription();
 	private final String errorColor = eLogColors.SEVERESTATECOLOR.getHTMLColorDescription();
@@ -32,11 +32,6 @@ public class ConverterToTestNGReport implements ILogConverter{
 	private final String expressionOfColorPattern    = "#Color";
 	private final String expressionOfTimePattern     = "#Time";
 	private final String expressionOfMessagePattern  = "#Message";
-	
-	private final String iconFineFile      = EIconsForReport.FINE.getCopy();  
-	private final String iconSuccessFile   = EIconsForReport.SUCCESS.getCopy();  
-	private final String iconWarningFile   = EIconsForReport.WARNING.getCopy();  
-	private final String iconErrorFile     = EIconsForReport.ERROR.getCopy();
 	
 	private final String htmlPatternString   = EHtmlPatterns.HTMLPATTERN.getHtmlCode();
 	private final String htmlImageMaskString = EHtmlPatterns.IMAGEMASK.getHtmlCode();
@@ -98,28 +93,30 @@ public class ConverterToTestNGReport implements ILogConverter{
 	
 	private String returnHtmlString(LogRecWithAttach rec)
 	{
+		String outputDir = TestResultThreadLocal.get().getTestContext().getOutputDirectory();
+		
 		Level level = rec.getLevel();
 		String color = null; 
 		String icon  = null;
 		if (level==Level.SEVERE)
 		{
 			color = errorColor;
-			icon  = iconErrorFile;
+			icon  = EIconsForReport.ERROR.getPath(outputDir);
 		}
 		else if (level==Level.WARNING)
 		{
 			color = warnColor;
-			icon  = iconWarningFile;
+			icon  = EIconsForReport.WARNING.getPath(outputDir);
 		}
 		else if (level==Level.INFO)
 		{
 			color = successColor;
-			icon  = iconSuccessFile;
+			icon  = EIconsForReport.SUCCESS.getPath(outputDir);
 		}
 		else 
 		{
 			color = debugColor;
-			icon  = iconFineFile;
+			icon  = EIconsForReport.FINE.getPath(outputDir);
 		}
 		
 		Date date = new Date(rec.getMillis());

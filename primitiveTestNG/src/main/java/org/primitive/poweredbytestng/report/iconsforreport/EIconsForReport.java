@@ -17,12 +17,25 @@ public enum EIconsForReport {
 		this.fileName = fileName;
 	}
 	
-	public String getCopy()
+	//copy icon to some output folder 
+	public String getPath(String folder)
 	{
+		File iconFile = new File(folder + "/" + fileName);
+		if (iconFile.exists()) //if icon has been already copied
+		{
+			return iconFile.getAbsolutePath();
+		}
+		
+		//if icon is not copied works code that below 
+		File folderForIcons = new File(folder + "/");
+		if (!folderForIcons.exists())
+		{
+			folderForIcons.mkdirs();
+		}
+		
 		InputStream inputStream = getClass().getResourceAsStream(fileName);
 		try {
-			File tempIconFile = File.createTempFile("temp_", fileName);
-			FileOutputStream outputStream = new FileOutputStream(tempIconFile);
+			FileOutputStream outputStream = new FileOutputStream(iconFile);
 			int data = inputStream.read();
 			
 			while(data != -1) {
@@ -30,10 +43,10 @@ public enum EIconsForReport {
 				data = inputStream.read();
 	        }
 			outputStream.close();
-			return tempIconFile.getAbsolutePath();
 		}	
 		catch (Exception e) {	
 			throw new RuntimeException(e);
-		}		
+		}			
+		return iconFile.getAbsolutePath();
 	}
 }

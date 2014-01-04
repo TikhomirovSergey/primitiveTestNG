@@ -3,7 +3,7 @@ package org.primitive.poweredbytestng;
 import org.testng.ITestResult;
 
 //it contains the threadlocal instance with test results 
-public class TestResultThreadLocal {
+class TestResultThreadLocal {
 	private static final ThreadLocal<ITestResult> results = new ThreadLocal<ITestResult>();
 	
 	public static void set(ITestResult result)
