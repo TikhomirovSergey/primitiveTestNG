@@ -23,7 +23,7 @@ public enum EIconsForReport {
 		File iconFile = new File(folder + "/" + fileName);
 		if (iconFile.exists()) //if icon has been already copied
 		{
-			return iconFile.getAbsolutePath();
+			return iconFile.getName();
 		}
 		
 		//if icon is not copied works code that below 
@@ -47,6 +47,6 @@ public enum EIconsForReport {
 		catch (Exception e) {	
 			throw new RuntimeException(e);
 		}			
-		return iconFile.getAbsolutePath();
+		return iconFile.getName();
 	}
 }

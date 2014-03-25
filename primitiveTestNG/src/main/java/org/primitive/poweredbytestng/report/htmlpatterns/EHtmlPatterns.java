@@ -6,8 +6,7 @@ import java.io.InputStreamReader;
 
 public enum EHtmlPatterns {
 	HTMLPATTERN("htmlPattern.htm"),
-	FILEMASK("fileMask.htm"),
-	IMAGEMASK("imageMask.htm");
+	FILEMASK("fileMask.htm");
 
 	private String fileName;
 	
