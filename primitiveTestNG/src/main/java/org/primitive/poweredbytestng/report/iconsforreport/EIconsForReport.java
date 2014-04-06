@@ -1,8 +1,10 @@
 package org.primitive.poweredbytestng.report.iconsforreport;
 
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
+import org.openqa.selenium.internal.Base64Encoder;
 
 public enum EIconsForReport {
 	ERROR("error.png"),
@@ -17,36 +19,16 @@ public enum EIconsForReport {
 		this.fileName = fileName;
 	}
 	
-	//copy icon to some output folder 
-	public String getPath(String folder)
-	{
-		File iconFile = new File(folder + "/" + fileName);
-		if (iconFile.exists()) //if icon has been already copied
-		{
-			return iconFile.getName();
-		}
-		
-		//if icon is not copied works code that below 
-		File folderForIcons = new File(folder + "/");
-		if (!folderForIcons.exists())
-		{
-			folderForIcons.mkdirs();
-		}
-		
+	public String getBase64()
+	{		
 		InputStream inputStream = getClass().getResourceAsStream(fileName);
+		byte[] iconBytes = null;
 		try {
-			FileOutputStream outputStream = new FileOutputStream(iconFile);
-			int data = inputStream.read();
-			
-			while(data != -1) {
-				outputStream.write(data);
-				data = inputStream.read();
-	        }
-			outputStream.close();
-		}	
-		catch (Exception e) {	
+			iconBytes = IOUtils.toByteArray(inputStream);
+		} catch (IOException e) {
 			throw new RuntimeException(e);
-		}			
-		return iconFile.getName();
+		}
+		Base64Encoder encoder = new Base64Encoder();
+		return encoder.encode(iconBytes);		
 	}
 }

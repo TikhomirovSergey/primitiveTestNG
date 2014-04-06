@@ -23,7 +23,7 @@ import org.testng.Reporter;
  * @author s.tihomirov It is the basic implementation of ISender for using by
  *         TESTNG framework. It posts log record in report
  */
-class ConverterToTestNGReport implements ILogConverter {
+class ConverterToTestNGReport implements ILogConverter, IHasAttachmentFolder {
 
 	private final String debugColor = eLogColors.DEBUGCOLOR
 			.getHTMLColorDescription();
@@ -36,24 +36,23 @@ class ConverterToTestNGReport implements ILogConverter {
 			.getHTMLColorDescription();
 
 	private final String expressionOfFilePath = "#filepath";
-	private final String expressionOfComment = "#Comment";
+	private final String expressionOfIconCode   = "#Icon";
+	private final String expressionOfComment    = "#Comment";
 
 	private final String expressionOfColorPattern = "#Color";
 	private final String expressionOfTimePattern = "#Time";
 	private final String expressionOfMessagePattern = "#Message";
+	
+	private final String successIcon = EIconsForReport.SUCCESS.getBase64();
+	private final String warnIcon    = EIconsForReport.WARNING.getBase64();
+	private final String errorIcon   = EIconsForReport.ERROR.getBase64();
+	private final String debugIcon   = EIconsForReport.FINE.getBase64();
 
 	private final String htmlPatternString = EHtmlPatterns.HTMLPATTERN
 			.getHtmlCode();
 	private final String htmlFileMaskString = EHtmlPatterns.FILEMASK
 			.getHtmlCode();
-	private final String attachedFolder = "/attached/";
 
-	// for posting screenshots as pictures
-	// private final String textPatternForPicture =
-	// "<p><img src=\"file:///FilePath\" alt=\"Comment\"></p>";
-	// for posting files as links
-	// private final String textPatternForAnyFile =
-	// "<a href= \"FilePath\" type=\"file\">Comment> </a>";
 	private String formatWithStackTrace(String original, LogRecWithAttach rec) {
 		String formatted = null;
 
@@ -75,9 +74,9 @@ class ConverterToTestNGReport implements ILogConverter {
 	}
 	
 	private File makeACopy(File original){
-		File dirs = new File(getOutPutDir() + attachedFolder + "/");
+		File dirs = new File(getOutPutDir() + attachedFolder);
 		dirs.mkdirs();
-		File destination = new File(getOutPutDir() + attachedFolder + "/" + UUID.randomUUID().toString() + "_"
+		File destination = new File(getOutPutDir() + attachedFolder + UUID.randomUUID().toString() + "_"
 		+ original.getName());
 		try {
 			FileUtils.copyFile(original, destination);
@@ -104,9 +103,9 @@ class ConverterToTestNGReport implements ILogConverter {
 			}
 			formattedMessage = pattern.replace(expressionOfComment,
 					rec.getMessage());
+			String pathToAttach = fileToAttach.getAbsolutePath();
 			formattedMessage = formattedMessage.replace(expressionOfFilePath,
-					fileToAttach.getParentFile().getName() + "/"
-							+ fileToAttach.getName());
+					"." + File.separator + pathToAttach.replace(getOutPutDir(), ""));
 		}
 		return formatWithStackTrace(formattedMessage, rec);
 	}
@@ -117,30 +116,29 @@ class ConverterToTestNGReport implements ILogConverter {
 	}
 
 	private String returnHtmlString(LogRecWithAttach rec) {
-		String outputDir = getOutPutDir();
 
 		Level level = rec.getLevel();
 		String color = null;
 		String icon = null;
 		if (level == Level.SEVERE) {
 			color = errorColor;
-			icon = EIconsForReport.ERROR.getPath(outputDir);
+			icon = errorIcon;
 		} else if (level == Level.WARNING) {
 			color = warnColor;
-			icon = EIconsForReport.WARNING.getPath(outputDir);
+			icon = warnIcon;
 		} else if (level == Level.INFO) {
 			color = successColor;
-			icon = EIconsForReport.SUCCESS.getPath(outputDir);
+			icon = successIcon;
 		} else {
 			color = debugColor;
-			icon = EIconsForReport.FINE.getPath(outputDir);
+			icon = debugIcon;
 		}
 
 		Date date = new Date(rec.getMillis());
 		String turnedString = htmlPatternString;
 		turnedString = htmlPatternString.replace(expressionOfColorPattern,
 				color);
-		turnedString = turnedString.replace(expressionOfFilePath, icon);
+		turnedString = turnedString.replace(expressionOfIconCode, icon);
 		turnedString = turnedString.replace(expressionOfTimePattern,
 				date.toString());
 		turnedString = turnedString.replace(expressionOfMessagePattern,
